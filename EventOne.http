@@ -1,0 +1,6 @@
+@EventOne_HostAddress = http://localhost:5015
+
+GET {{EventOne_HostAddress}}/weatherforecast/
+Accept: application/json
+
+###
