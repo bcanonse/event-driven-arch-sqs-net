@@ -1,8 +1,19 @@
+using Amazon.Runtime;
+using Amazon.SQS;
 using EventOne.Data;
 using EventOne.Services;
 using Microsoft.EntityFrameworkCore;
 
 var builder = WebApplication.CreateBuilder(args);
+
+var sqsClient = new AmazonSQSClient(
+    new BasicAWSCredentials(
+        builder.Configuration.GetSection("AWS:AccessKeyID").Value,
+        builder.Configuration.GetSection("AWS:SecretAccessKey").Value
+    ), Amazon.RegionEndpoint.USEast2
+);
+
+builder.Services.AddSingleton<IAmazonSQS>(sqsClient);
 
 var connection = builder.Configuration.GetConnectionString("SQLiteConnection");
 
@@ -16,6 +27,7 @@ builder.Services.AddDbContext<AppDbContext>(options =>
 builder.Services.AddAutoMapper(AppDomain.CurrentDomain.GetAssemblies());
 
 builder.Services.AddScoped<IDriversService, DriversService>();
+builder.Services.AddScoped<IQueueService, QueueService>();
 
 builder.Services.AddControllers();
 // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle

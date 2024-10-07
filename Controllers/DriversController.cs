@@ -8,7 +8,10 @@ namespace EventOne.Controllers;
 
 [ApiController]
 [Route("[controller]")]
-public class DriversController(IDriversService driversService) : ControllerBase
+public class DriversController(
+    IDriversService driversService,
+    IQueueService queueService
+) : ControllerBase
 {
 
     [HttpGet]
@@ -23,6 +26,8 @@ public class DriversController(IDriversService driversService) : ControllerBase
         }
 
         await driversService.CreateDriver(createDriverDto);
+
+        await queueService.SendMessage($"Driver created with: {createDriverDto.FirstName}");
 
         return StatusCode(201);
     }
