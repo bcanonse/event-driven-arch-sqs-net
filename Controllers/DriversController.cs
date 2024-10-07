@@ -10,7 +10,8 @@ namespace EventOne.Controllers;
 [Route("[controller]")]
 public class DriversController(
     IDriversService driversService,
-    IQueueService queueService
+    // IQueueService queueService
+    INotificationService notificationService
 ) : ControllerBase
 {
 
@@ -27,7 +28,8 @@ public class DriversController(
 
         await driversService.CreateDriver(createDriverDto);
 
-        await queueService.SendMessage($"Driver created with: {createDriverDto.FirstName}");
+        // await queueService.SendMessage($"Driver created with: {createDriverDto.FirstName}");
+        await notificationService.SendNotification($"Driver created with: {createDriverDto.FirstName}");
 
         return StatusCode(201);
     }
